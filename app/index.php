@@ -1,38 +1,52 @@
 <?php
+
 require "vendor/autoload.php";
-
+use utilidades\DB ;
 use Dotenv\Dotenv;
-use Utilidades\DB;
 
 
 
-$dotenv = Dotenv::createImmutable(__DIR__."/..");
+$dotenv = Dotenv::createImmutable("./../");
 $dotenv->safeLoad();
 
-$con = new DB();
-$opcion = $_POST['submit'] ?? null;
+
+$opcion = $_POST['submit'];
+
+$db = new DB();
+
+
 switch ($opcion){
-    case "Registrarme":
-        $usuario = $_POST['usuario'];
-        $password = $_POST['password'];
-        $msj = $con->insertar_usuario($usuario, $password);
-        break;
     case "Acceder":
-        $usuario = $_POST['usuario'];
+        $user = $_POST['user'];
         $password = $_POST['password'];
-        if ($con->valida_usuario($usuario, $password)===true){
+        if ($db->validar_usuario($user, $password)){
             session_start();
-            $_SESSION['usuario']=$usuario;
+            $_SESSION['user']=$user;
             header("Location:sitio.php");
-            exit;
-        }else{
-            $msj ="El usuairo $usuario no existe";
+            exit();
         }
+        $msj ="Datos incorrectos";
         break;
-    defualt:
+    case "Registrarme":
+        $user = $_POST['user'];
+        $password = $_POST['password'];
+        $rtdo = $db->insertar_datos($user, $password);
+        $msj = $rtdo? "Se ha insertado $user": "Error insertando $user";
+        break;
+    default:
+
 }
 
+
+
+
+
+
+
+
+
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -40,18 +54,21 @@ switch ($opcion){
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+
+    <title>BD</title>
+    <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-<fieldset style="width:50%;background: antiquewhite; margin:20%">
+<h1><?=$msj ??""?></h1>
+<fieldset>
     <legend>Datos de acceso</legend>
-<form action="index.php" method="post">
-    usuario <input type="text" name="usuario" id=""><br />
-    password <input type="text" name="password" id=""><br />
-    <input type="submit" value="Acceder" name="submit">
-    <input type="submit" value="Registrarme" name="submit">
-</form>
-    <?=$msj ??""?>
+    <form action="" method="POST">
+        Usuario <input type="text" name="user" placeholder="Usuario" id=""><br />
+        Passowrd <input type="text" name="password" placeholder="Password" id=""><br />
+        <input type="submit" value="Acceder" name="submit">
+        <input type="submit" value="Registrarme" name="submit">
+    </form>
 </fieldset>
+
 </body>
 </html>

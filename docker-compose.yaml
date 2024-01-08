@@ -2,8 +2,8 @@
 version: "3.8"
 services:
   mysql:
-#    image: mysql
-    build: ./imagenes/mysql
+    image: mysql
+#    build: ./imagenes/mysql
     volumes:
      - ./datos:/var/lib/mysql
      - ./datos.sql:/docker-entrypoint-initdb.d/datos.sql

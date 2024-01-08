@@ -1,69 +1,57 @@
 <?php
+namespace utilidades;
 
-namespace Utilidades;
+class DB{
 
-class DB
-{
-    private \mysqli $con;
+ private \mysqli $con;
+
 
     public function __construct()
     {
-        $host = $_ENV['HOST'];
         $user = $_ENV['USER_'];
         $password = $_ENV['PASSWORD'];
-        $database = $_ENV['DATABASE'];;
+        $database = $_ENV['DATABASE'];
+        $host = $_ENV['HOST'];
         $port = $_ENV['PORT_MYSQL'];
-
         try {
-            $con = new \mysqli($host, $user, $password, $database, $port);
-        } catch (\mysqli_sql_exception $e) {
-            die("Error contectando " . $e->getMessage());
+            $this->con = new \mysqli($host, $user, $password, $database, $port);
+        }catch (\mysqli_sql_exception $error ){
+            die ("Error contectando ".$error->getMessage());
         }
-        $this->con = $con;
-
-
     }
 
-    public function insertar_usuario(string|null $nombre, string|null $password): string
-    {
 
-        $sentencia = <<<FIN
-          insert into USUARIOS
-          (nombre, password) values ('$nombre', '$password')
+    public function insertar_datos(string|null $user, string $password):bool{
+
+        $sentencia =<<<FIN
+            insert into usuarios (nombre, password)
+            values ('$user', '$password')
 FIN;
         try {
             $rtdo = $this->con->query($sentencia);
-            if ($this->con->affected_rows > 0)
-                return "El usuario $nombre se ha insertado";
-            else
-                return "No se ha podido insertar  $nombre ";
-
-        } catch (\mysqli_sql_exception $e) {
-            return "Error : " . $e->getMessage();
+        }catch(\mysqli_sql_exception $e){
+            echo $e->getMessage();
+            return false;
         }
+        return $rtdo;
     }
 
-    public function valida_usuario($nombre, $password)
-    {
-        $sentencia = <<<FIN
-select * 
-from USUARIOS
-where nombre = '$nombre' and password= '$password'
+    public function validar_usuario($user, $password):bool{
+        $sentencia =<<<FIN
+            select * from usuarios
+            where nombre = '$user' AND password= '$password'
 FIN;
-
         try {
             $rtdo = $this->con->query($sentencia);
-            if ($rtdo->num_rows > 0)
-                return true;
-            else
-                return false;
-
-        } catch (\mysqli_sql_exception $e) {
-            var_dump($e);
-            exit;
-            return "Error : " . $e->getMessage();
+            var_dump($rtdo);
+        }catch(\mysqli_sql_exception $e){
+            echo $e->getMessage();
+            return false;
         }
+        if ($rtdo->num_rows>0)
+            return true;
+        else
+            return false;
     }
-
 
 }

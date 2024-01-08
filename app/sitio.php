@@ -1,7 +1,14 @@
 <?php
 session_start();
-$nombre = $_SESSION['usuario'];
+$user = $_SESSION['user'] ?? null;
+if (is_null($user)) {
+    header("Location:index.php");
+    exit();
+}
+
+
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,7 +19,7 @@ $nombre = $_SESSION['usuario'];
     <title>Document</title>
 </head>
 <body>
-<h1>Bienvenido a este sitio web <?=$nombre?></h1>
+<h1>Bie nvenido <?=$user?></h1>
 
 </body>
 </html>
