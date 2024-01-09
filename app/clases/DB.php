@@ -23,35 +23,56 @@ class DB{
 
     public function insertar_datos(string|null $user, string $password):bool{
 
+
+        $password = password_hash($password,PASSWORD_BCRYPT );
         $sentencia =<<<FIN
             insert into usuarios (nombre, password)
-            values ('$user', '$password')
+            values (?, ?)
 FIN;
         try {
-            $rtdo = $this->con->query($sentencia);
+            $stmt = $this->con->stmt_init();
+            $stmt->prepare($sentencia);
+            $stmt->bind_param("ss", $user, $password);
+            $stmt->execute();
+            $stmt->store_result();
         }catch(\mysqli_sql_exception $e){
             echo $e->getMessage();
             return false;
         }
-        return $rtdo;
+        return $stmt->affected_rows==1? true:false;
     }
 
     public function validar_usuario($user, $password):bool{
         $sentencia =<<<FIN
-            select * from usuarios
-            where nombre = '$user' AND password= '$password'
+            select password from usuarios
+            where nombre = ? 
 FIN;
         try {
-            $rtdo = $this->con->query($sentencia);
-            var_dump($rtdo);
+            $stmt = $this->con->stmt_init();
+            $stmt->prepare($sentencia);
+            $stmt->bind_param("s",$user);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($pass_database);
+            $stmt->fetch();
+            return  password_verify($password, $pass_database);
         }catch(\mysqli_sql_exception $e){
             echo $e->getMessage();
             return false;
         }
-        if ($rtdo->num_rows>0)
+        if ($stmt->num_rows>0)
             return true;
         else
             return false;
     }
+public function obtener_familias(){
+        $sentencia="select * from  familia";
+        $rtdo = $this->con->query($sentencia);
+
+
+        return $rtdo->fetch_all();
+
+
+}
 
 }

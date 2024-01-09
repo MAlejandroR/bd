@@ -14,7 +14,6 @@ $opcion = $_POST['submit'];
 
 $db = new DB();
 
-
 switch ($opcion){
     case "Acceder":
         $user = $_POST['user'];

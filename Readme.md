@@ -22,4 +22,25 @@ Levantáis el contenedor
 docker compose up -d
 ```
 
+## Clase del martes
+
+Hemos añadido funcionalidad nueva
+
+Ahora cuando accedemos a sitio vemos todos las familias en un desplegable
+
+Hasta aquí está implementado en este código
+
+
+### Próximas acciones
+Para la clase del jueves trataremos los siguientes asepctos
+Ahora se trata de que al seleccionar una famlia concreta, nos muestre todos los productos de esa familia
+
+
+Cada producto que lo podamos modificar y que se quede guardado
+
+
+Aquí tienes una ejecución de esta práctica
+
+http://manuel.infenlaces.com/contenido/practicas/practica_productos
+
 
