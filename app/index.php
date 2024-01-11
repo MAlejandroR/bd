@@ -10,7 +10,7 @@ $dotenv = Dotenv::createImmutable("./../");
 $dotenv->safeLoad();
 
 
-$opcion = $_POST['submit'];
+$opcion = $_POST['submit']??"";
 
 $db = new DB();
 
